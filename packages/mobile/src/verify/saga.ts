@@ -5,19 +5,11 @@ import {
   ActionableAttestation,
   AttestationsWrapper,
 } from '@celo/contractkit/lib/wrappers/Attestations'
-import { PhoneNumberHashDetails } from '@celo/identity/lib/odis/phone-number-identifier'
-import { GetDistributedBlindedPepperResp } from '@celo/komencikit/src/actions'
-import { FetchError, TxError } from '@celo/komencikit/src/errors'
-import { KomenciKit } from '@celo/komencikit/src/kit'
-import { eqAddress } from '@celo/utils/lib/address'
-import { retryAsync } from '@celo/utils/lib/async'
-import {
-  AttestationsStatus,
-  extractAttestationCodeFromMessage,
-  extractSecurityCodeWithPrefix,
-} from '@celo/utils/lib/attestations'
+import { AttestationsStatus } from '@celo/utils/lib/attestations'
 import { getPhoneHash } from '@celo/utils/lib/phoneNumbers'
-import AwaitLock from 'await-lock'
+import { GetDistributedBlindedPepperResp } from '@komenci/kit/lib/actions'
+import { FetchError, TxError } from '@komenci/kit/lib/errors'
+import { KomenciKit } from '@komenci/kit/lib/kit'
 import DeviceInfo from 'react-native-device-info'
 import {
   all,
@@ -112,8 +104,8 @@ import {
   startKomenciSession,
   stop,
   succeed,
-  VERIFICATION_TIMEOUT,
   verificationStatusSelector,
+  VERIFICATION_TIMEOUT,
 } from 'src/verify/module'
 import { requestAttestationsSaga } from 'src/verify/requestAttestations'
 import {

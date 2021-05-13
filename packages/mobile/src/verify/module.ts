@@ -5,6 +5,7 @@ import { AttestationsStatus } from '@celo/utils/lib/attestations'
 import { createAction, createReducer, createSelector } from '@reduxjs/toolkit'
 import BigNumber from 'bignumber.js'
 import _ from 'lodash'
+import { Actions as AppActions, UpdateFeatureFlagsAction } from 'src/app/actions'
 import { CodeInputStatus } from 'src/components/CodeInput'
 import { celoTokenBalanceSelector } from 'src/goldToken/selectors'
 import { getRehydratePayload, REHYDRATE, RehydrateAction } from 'src/redux/persist-helper'
@@ -258,6 +259,11 @@ export interface State {
   acceptedAttestationCodes: AttestationCode[]
   // Represents the status in the UI. Should be of size 3.
   attestationInputStatus: CodeInputStatus[]
+  // KomenciKit configuration
+  komenciConfig: {
+    useLightProxy: boolean
+    allowedDeployers: string[]
+  }
 }
 
 const initialState: State = {
@@ -289,6 +295,10 @@ const initialState: State = {
     CodeInputStatus.Disabled,
     CodeInputStatus.Disabled,
   ],
+  komenciConfig: {
+    useLightProxy: false,
+    allowedDeployers: [],
+  },
 }
 
 export const reducer = createReducer(initialState, (builder) => {
@@ -517,6 +527,15 @@ export const reducer = createReducer(initialState, (builder) => {
         ),
       }
     })
+    .addCase(AppActions.UPDATE_FEATURE_FLAGS, (state, action: UpdateFeatureFlagsAction) => {
+      return {
+        ...state,
+        komenciConfig: {
+          useLightProxy: action.flags.komenci.useLightProxy,
+          allowedDeployers: action.flags.komenci.allowedDeployers,
+        },
+      }
+    })
 })
 
 function updatedInputStatuses(state: State, index: number, status: CodeInputStatus) {
@@ -591,3 +610,5 @@ export const isBalanceSufficientSelector = createSelector(
     return isBalanceSufficient
   }
 )
+
+export const komenciConfigSelector = (state: RootState) => state.verify.komenciConfig

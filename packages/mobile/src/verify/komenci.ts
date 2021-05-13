@@ -32,7 +32,6 @@ import {
   storeTimestampIfKomenciError,
 } from 'src/identity/feelessVerificationErrors'
 import { e164NumberToSaltSelector, E164NumberToSaltType } from 'src/identity/reducer'
-
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import Logger from 'src/utils/Logger'
@@ -311,14 +310,17 @@ export function* fetchKomenciSession(komenciKit: KomenciKit, e164Number: string)
   yield put(setKomenciContext({ unverifiedMtwAddress, sessionActive }))
 }
 
-export function getKomenciKit(
+export function* getKomenciKit(
   contractKit: ContractKit,
   walletAddress: Address,
   komenci: KomenciContext
 ) {
+  const komenciConfig = yield select(komenciConfigSelector)
   return new KomenciKit(contractKit, walletAddress, {
     url: komenci.callbackUrl || networkConfig.komenciUrl,
     token: komenci.sessionToken,
+    proxyType: komenciConfig.useLightProxy ? ProxyType.LightProxy : ProxyType.LegacyProxy,
+    allowedDeployers: komenciConfig.allowedDeployers,
   })
 }
 
