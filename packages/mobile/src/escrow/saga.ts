@@ -357,7 +357,8 @@ function* withdrawFromEscrowWithoutCode(komenciActive: boolean = false) {
         if (!komenciActive) {
           yield call(sendTransaction, withdrawAndTransferTx.txo, walletAddress, context)
         } else {
-          const komenciKit = yield select(komenciContextSelector)
+          const komenci = yield select(komenciContextSelector)
+          const komenciKit = yield call(getKomenciKit, contractKit, walletAddress, komenci)
 
           const withdrawAndTransferTxResult: Result<
             CeloTxReceipt,
