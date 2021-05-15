@@ -70,7 +70,6 @@ export function initializeDb() {
 
   function addOrUpdateRegistration(snapshot: DataSnapshot) {
     const registration = (snapshot && snapshot.val()) || {}
-    console.debug('New or updated registration:', snapshot.key, registration)
     if (snapshot.key) {
       registrations[snapshot.key] = registration
     }

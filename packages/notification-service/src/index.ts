@@ -11,7 +11,7 @@ import {
   WEB3_PROVIDER_URL,
 } from './config'
 import { getLastBlockNotified, initializeDb as initializeFirebaseDb } from './firebase'
-import { invitesPolling, notificationPolling } from './polling'
+import { notificationPolling, pollers } from './polling'
 
 console.info('Service starting with environment, version:', ENVIRONMENT, VERSION)
 const START_TIME = Date.now()
@@ -70,8 +70,9 @@ initializeFirebaseDb()
  * Start polling the blockscout api
  */
 console.info('Starting Blockscout polling')
+
 notificationPolling.run()
-invitesPolling.run()
+pollers.forEach((poller) => poller.run())
 
 if (!WEB3_PROVIDER_URL) {
   console.info('No Web3 provider found. Skipping exchange polling.')
