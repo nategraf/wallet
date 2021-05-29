@@ -1,6 +1,6 @@
-import { Contract, Event, indexEvents } from '.'
-import { partialEventLog } from '../util/testing'
-import { getLastBlock, setLastBlock } from './blocks'
+import { Contract, Event, indexEvents } from '../src/indexer'
+import { getLastBlock, setLastBlock } from '../src/indexer/blocks'
+import { partialEventLog } from '../src/util/testing'
 
 // TODO: Write e2e tests running with a real node and a real db.
 
@@ -10,13 +10,13 @@ const setLastBlockMock = setLastBlock as jest.Mock
 const getLastBlockNumberMock = jest.fn()
 const getAccountEventsMock = jest.fn()
 
-jest.mock('./db', () => ({
-  knex: (tableName: string) => ({
+jest.mock('../src/database/db', () => ({
+  database: (tableName: string) => ({
     insert: jest.fn((payload: any) => saveRowMock(tableName, payload)),
   }),
 }))
-jest.mock('./blocks')
-jest.mock('../util/utils', () => ({
+jest.mock('../src/indexer/blocks')
+jest.mock('../src/util/utils', () => ({
   getContractKit: jest.fn(() => ({
     web3: {
       eth: {
@@ -59,8 +59,14 @@ describe('Indexer', () => {
     }))
 
     expect(saveRowMock).toHaveBeenCalledTimes(2)
-    expect(saveRowMock).toHaveBeenCalledWith(tableName, { transactionHash: firstTxHash })
-    expect(saveRowMock).toHaveBeenCalledWith(tableName, { transactionHash: secondTxHash })
+    expect(saveRowMock).toHaveBeenCalledWith(
+      tableName,
+      expect.objectContaining({ transactionHash: firstTxHash })
+    )
+    expect(saveRowMock).toHaveBeenCalledWith(
+      tableName,
+      expect.objectContaining({ transactionHash: secondTxHash })
+    )
 
     expect(setLastBlockMock).toHaveBeenCalledTimes(2)
     expect(setLastBlockMock).toHaveBeenCalledWith(expect.any(String), fromBlock + 10000 + 1)
