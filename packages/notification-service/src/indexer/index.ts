@@ -29,31 +29,24 @@ export enum Event {
 interface ContractInfo {
   contract: (kit: ContractKit) => Promise<BaseWrapper<any>>
   batchSize: number
-  events: { [event in Event]?: EventInfo }
 }
-
-interface EventInfo {}
 
 const contracts: { [contract in Contract]: ContractInfo } = {
   [Contract.Accounts]: {
     contract: (kit) => kit.contracts.getAccounts(),
     batchSize: 10000,
-    events: {},
   },
   [Contract.Escrow]: {
     contract: (kit) => kit.contracts.getEscrow(),
     batchSize: 10000,
-    events: {},
   },
   [Contract.Attestations]: {
     contract: (kit) => kit.contracts.getAttestations(),
     batchSize: 1000,
-    events: {},
   },
   [Contract.cUsd]: {
     contract: (kit) => kit.contracts.getStableToken(StableToken.cUSD),
     batchSize: 500,
-    events: {},
   },
 }
 
@@ -78,7 +71,7 @@ export async function indexEvents(
     const contractWrapper = await contract(kit)
 
     let events
-    do {
+    while (fromBlock < lastBlock) {
       const toBlock = Math.min(lastBlock, fromBlock + batchSize)
       events = await contractWrapper.getPastEvents(contractEvent, {
         fromBlock,
@@ -90,20 +83,10 @@ export async function indexEvents(
       )
       fromBlock = toBlock + 1
       await concurrentMap(CONCURRENT_EVENTS_HANDLED, events, async (event) => {
-        try {
-          await knex(tableName).insert(payloadMapper(event))
-          // await appendToQueue(contract, contractEvent, {
-          //   address,
-          //   transactionHash,
-          //   blockNumber,
-          //   returnValues,
-          // })
-        } catch (error) {
-          console.error(TAG, `${key} - Error while handling event`, error)
-        }
+        await knex(tableName).insert(payloadMapper(event))
       })
       setLastBlock(key, toBlock)
-    } while (fromBlock < lastBlock)
+    }
   } catch (error) {
     console.error(TAG, `${key} - Error while handling events`, error)
   }

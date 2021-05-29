@@ -1,8 +1,5 @@
 import { Contract, Event, indexEvents } from './index'
 
-// const inviter = event.returnValues.to.toLowerCase()
-// console.debug(TAG, `Sending invite notification to ${inviter}`)
-// await sendInviteNotification(inviter)
 enum Action {
   Transfer = 'Transfer',
   Withdraw = 'Withdraw',
