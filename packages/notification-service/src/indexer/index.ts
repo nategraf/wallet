@@ -26,6 +26,8 @@ export enum Event {
   Withdrawal = 'Withdrawal',
 }
 
+// TODO: Rethink this interface. batchSize should be tied to contract + event, not just contract.
+// Probably good to handle this together with the TODO on the Event enum.
 interface ContractInfo {
   contract: (kit: ContractKit) => Promise<BaseWrapper<any>>
   batchSize: number
