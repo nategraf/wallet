@@ -5,9 +5,7 @@ export async function handleAttestations() {
     Contract.Attestations,
     Event.AttestationCompleted,
     'attestations_completed',
-    ({ transactionHash, blockNumber, returnValues: { identifier, account, issuer } }) => ({
-      transactionHash,
-      blockNumber,
+    ({ returnValues: { identifier, account, issuer } }) => ({
       identifier,
       account,
       issuer,

@@ -2,9 +2,9 @@ import { concurrentMap } from '@celo/base'
 import { ContractKit, StableToken } from '@celo/contractkit'
 import { BaseWrapper } from '@celo/contractkit/lib/wrappers/BaseWrapper'
 import { EventLog } from 'web3-core'
+import { database } from '../database/db'
 import { getContractKit } from '../util/utils'
 import { getLastBlock, setLastBlock } from './blocks'
-import { knex } from './db'
 
 const TAG = 'Indexer'
 
@@ -83,7 +83,13 @@ export async function indexEvents(
       )
       fromBlock = toBlock + 1
       await concurrentMap(CONCURRENT_EVENTS_HANDLED, events, async (event) => {
-        await knex(tableName).insert(payloadMapper(event))
+        const { transactionHash, logIndex, blockNumber } = event
+        await database(tableName).insert({
+          transactionHash,
+          logIndex,
+          blockNumber,
+          ...payloadMapper(event),
+        })
       })
       setLastBlock(key, toBlock)
     }

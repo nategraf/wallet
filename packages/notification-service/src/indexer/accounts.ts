@@ -5,9 +5,7 @@ export async function handleAccountMappings() {
     Contract.Accounts,
     Event.AccountWalletAddressSet,
     'account_wallet_mappings',
-    ({ transactionHash, blockNumber, returnValues: { account, walletAddress } }) => ({
-      transactionHash,
-      blockNumber,
+    ({ returnValues: { account, walletAddress } }) => ({
       accountAddress: account,
       walletAddress,
     })

@@ -5,9 +5,7 @@ export async function handlecUsdTransfers() {
     Contract.cUsd,
     Event.Transfer,
     'transfers',
-    ({ transactionHash, blockNumber, returnValues: { from, to, value } }) => ({
-      transactionHash,
-      blockNumber,
+    ({ returnValues: { from, to, value } }) => ({
       from,
       to,
       value,

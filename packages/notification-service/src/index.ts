@@ -10,6 +10,7 @@ import {
   VERSION,
   WEB3_PROVIDER_URL,
 } from './config'
+import { initDatabase } from './database/db'
 import { getLastBlockNotified, initializeDb as initializeFirebaseDb } from './firebase'
 import { notificationPolling, pollers } from './polling'
 
@@ -18,6 +19,8 @@ const START_TIME = Date.now()
 
 // Metrics Middleware
 const metricsMiddleware = promBundle({ includeMethod: true })
+
+initDatabase().catch((error) => console.error('Error initializing database', error))
 
 /**
  * Create and configure Express server

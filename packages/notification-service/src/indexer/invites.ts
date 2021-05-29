@@ -11,13 +11,7 @@ export async function handleInvites() {
     Contract.Escrow,
     Event.Withdrawal,
     'escrow',
-    ({
-      transactionHash,
-      blockNumber,
-      returnValues: { identifier, to, token, value, paymentId },
-    }) => ({
-      transactionHash,
-      blockNumber,
+    ({ returnValues: { identifier, to, token, value, paymentId } }) => ({
       action: Action.Withdraw,
       from: to,
       identifier,
@@ -30,13 +24,7 @@ export async function handleInvites() {
     Contract.Escrow,
     Event.Transfer,
     'escrow',
-    ({
-      transactionHash,
-      blockNumber,
-      returnValues: { from, identifier, token, value, paymentId },
-    }) => ({
-      transactionHash,
-      blockNumber,
+    ({ returnValues: { from, identifier, token, value, paymentId } }) => ({
       action: Action.Transfer,
       from,
       identifier,
@@ -49,13 +37,7 @@ export async function handleInvites() {
     Contract.Escrow,
     Event.Revocation,
     'escrow',
-    ({
-      transactionHash,
-      blockNumber,
-      returnValues: { identifier, by, token, value, paymentId },
-    }) => ({
-      transactionHash,
-      blockNumber,
+    ({ returnValues: { identifier, by, token, value, paymentId } }) => ({
       action: Action.Revocation,
       from: by,
       identifier,

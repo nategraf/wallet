@@ -1,4 +1,4 @@
-import * as Knex from 'knex'
+import { Knex } from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('account_wallet_mappings', (table) => {
@@ -6,6 +6,9 @@ export async function up(knex: Knex): Promise<void> {
     table.string('walletAddress')
     table.integer('blockNumber')
     table.string('transactionHash')
+    table.integer('logIndex')
+
+    table.unique(['transactionHash', 'logIndex'])
   })
 }
 

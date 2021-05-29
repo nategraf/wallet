@@ -1,12 +1,12 @@
-import { knex } from './db'
+import { database } from '../database/db'
 
 const TABLE_NAME = 'last_blocks'
 
 export async function getLastBlock(key: string) {
-  const row = await knex(TABLE_NAME).where({ key: key }).first()
+  const row = await database(TABLE_NAME).where({ key: key }).first()
   return row?.lastBlock ?? 0
 }
 
 export async function setLastBlock(key: string, block: number) {
-  return knex(TABLE_NAME).where({ key: key }).update({ lastBlock: block })
+  return database(TABLE_NAME).where({ key: key }).update({ lastBlock: block })
 }

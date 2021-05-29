@@ -1,7 +1,7 @@
 import { notEmpty } from '@celo/utils/lib/collections'
-import { Currencies } from 'src/blockscout/transfers'
 import web3Abi, { AbiCoder } from 'web3-eth-abi'
 import { TokenTransfer, Transfer } from './blockscout'
+import { Currencies } from './transfers'
 
 const abiCoder = (web3Abi as unknown) as AbiCoder
 

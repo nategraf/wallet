@@ -1,4 +1,4 @@
-import * as Knex from 'knex'
+import { Knex } from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('escrow', (table) => {
@@ -10,6 +10,9 @@ export async function up(knex: Knex): Promise<void> {
     table.string('paymentId')
     table.integer('blockNumber')
     table.string('transactionHash')
+    table.integer('logIndex')
+
+    table.unique(['transactionHash', 'logIndex'])
   })
 }
 
