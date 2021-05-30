@@ -9,10 +9,11 @@ export async function up(knex: Knex): Promise<void> {
     table.decimal('value', 32, 0)
     table.string('paymentId')
     table.integer('blockNumber')
+    table.string('blockHash')
     table.string('transactionHash')
     table.integer('logIndex')
 
-    table.unique(['transactionHash', 'logIndex'])
+    table.unique(['transactionHash', 'blockHash', 'logIndex'])
   })
 }
 

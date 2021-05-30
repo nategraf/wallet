@@ -8,7 +8,7 @@ import { getLastBlock, setLastBlock } from './blocks'
 
 const TAG = 'Indexer'
 
-const CONCURRENT_EVENTS_HANDLED = 20
+const CONCURRENT_EVENTS_HANDLED = 5
 
 export enum Contract {
   Accounts = 'Accounts',
@@ -85,11 +85,12 @@ export async function indexEvents(
       )
       fromBlock = toBlock + 1
       await concurrentMap(CONCURRENT_EVENTS_HANDLED, events, async (event) => {
-        const { transactionHash, logIndex, blockNumber } = event
+        const { transactionHash, logIndex, blockNumber, blockHash } = event
         await database(tableName).insert({
           transactionHash,
           logIndex,
           blockNumber,
+          blockHash,
           ...payloadMapper(event),
         })
       })
