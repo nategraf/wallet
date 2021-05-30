@@ -20,8 +20,6 @@ const START_TIME = Date.now()
 // Metrics Middleware
 const metricsMiddleware = promBundle({ includeMethod: true })
 
-initDatabase().catch((error) => console.error('Error initializing database', error))
-
 /**
  * Create and configure Express server
  * This is a necessary requirement for an app to run stably on App Engine
@@ -75,7 +73,9 @@ initializeFirebaseDb()
 console.info('Starting Blockscout polling')
 
 notificationPolling.run()
-pollers.forEach((poller) => poller.run())
+initDatabase()
+  .then(() => pollers.forEach((poller) => poller.run()))
+  .catch((error) => console.error('Error initializing database', error))
 
 if (!WEB3_PROVIDER_URL) {
   console.info('No Web3 provider found. Skipping exchange polling.')

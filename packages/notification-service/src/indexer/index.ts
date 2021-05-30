@@ -7,7 +7,6 @@ import { getContractKit } from '../util/utils'
 import { getLastBlock, setLastBlock } from './blocks'
 
 const TAG = 'Indexer'
-
 const CONCURRENT_EVENTS_HANDLED = 5
 
 export enum Contract {
@@ -63,26 +62,24 @@ export async function indexEvents(
   try {
     const kit = await getContractKit()
     let fromBlock = (await getLastBlock(key)) + 1
-    if (fromBlock <= 0) {
-      return
-    }
     const lastBlock = await kit.web3.eth.getBlockNumber()
     console.debug(TAG, `${key} - Starting to fetch from block ${fromBlock}`)
 
     const { contract, batchSize } = contracts[contractKey]
     const contractWrapper = await contract(kit)
 
-    let events
-    while (fromBlock < lastBlock) {
+    while (fromBlock <= lastBlock) {
       const toBlock = Math.min(lastBlock, fromBlock + batchSize)
-      events = await contractWrapper.getPastEvents(contractEvent, {
+      const events = await contractWrapper.getPastEvents(contractEvent, {
         fromBlock,
         toBlock,
       })
-      console.debug(
-        TAG,
-        `${key} - Got ${events.length} events between blocks [${fromBlock}, ${toBlock}]`
-      )
+      if (events.length > 0) {
+        console.debug(
+          TAG,
+          `${key} - Got ${events.length} events between blocks [${fromBlock}, ${toBlock}]`
+        )
+      }
       fromBlock = toBlock + 1
       await concurrentMap(CONCURRENT_EVENTS_HANDLED, events, async (event) => {
         const { transactionHash, logIndex, blockNumber, blockHash } = event
