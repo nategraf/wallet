@@ -37,6 +37,13 @@ export const XANPOOL_DATA = {
   supported_currencies: ['IDR', 'VND', 'SGD', 'HKD', 'TBH', 'INR', 'MYR', 'PHP'],
 }
 
+export const DB_CONFIG = {
+  host: config.db.host ?? 'localhost',
+  database: config.db.database ?? 'indexer',
+  user: config.db.user ?? 'postgres',
+  password: config.db.password ?? 'docker',
+}
+
 export const FULL_NODE_URL = config.full_node.url
 
 export const VALORA_LOGO_URL =
