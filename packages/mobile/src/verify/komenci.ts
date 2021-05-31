@@ -1,7 +1,9 @@
 import { Result } from '@celo/base/lib/result'
 import { Address, ContractKit } from '@celo/contractkit/lib'
 import { AttestationsWrapper } from '@celo/contractkit/lib/wrappers/Attestations'
-import { CheckSessionResp, StartSessionResp } from '@celo/komencikit/src/actions'
+import { sleep } from '@celo/utils/lib/async'
+import { AttestationsStatus } from '@celo/utils/lib/attestations'
+import { CheckSessionResp, StartSessionResp } from '@komenci/kit/lib/actions'
 import {
   AuthenticationFailed,
   FetchError,
@@ -18,11 +20,9 @@ import {
   TxRevertError,
   TxTimeoutError,
   WalletValidationError,
-} from '@celo/komencikit/src/errors'
-import { KomenciKit } from '@celo/komencikit/src/kit'
-import { verifyWallet } from '@celo/komencikit/src/verifyWallet'
-import { sleep } from '@celo/utils/lib/async'
-import { AttestationsStatus } from '@celo/utils/lib/attestations'
+} from '@komenci/kit/lib/errors'
+import { KomenciKit, ProxyType } from '@komenci/kit/lib/kit'
+import { verifyWallet } from '@komenci/kit/lib/verifyWallet'
 import { all, call, put, select } from 'redux-saga/effects'
 import networkConfig from 'src/geth/networkConfig'
 import {
@@ -41,6 +41,7 @@ import {
   fetchOnChainData,
   fetchPhoneNumberDetails,
   KomenciAvailable,
+  komenciConfigSelector,
   KomenciContext,
   komenciContextSelector,
   phoneHashSelector,

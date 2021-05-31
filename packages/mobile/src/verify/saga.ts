@@ -5,11 +5,19 @@ import {
   ActionableAttestation,
   AttestationsWrapper,
 } from '@celo/contractkit/lib/wrappers/Attestations'
-import { AttestationsStatus } from '@celo/utils/lib/attestations'
+import { PhoneNumberHashDetails } from '@celo/identity/lib/odis/phone-number-identifier'
+import { eqAddress } from '@celo/utils/lib/address'
+import { retryAsync } from '@celo/utils/lib/async'
+import {
+  AttestationsStatus,
+  extractAttestationCodeFromMessage,
+  extractSecurityCodeWithPrefix,
+} from '@celo/utils/lib/attestations'
 import { getPhoneHash } from '@celo/utils/lib/phoneNumbers'
 import { GetDistributedBlindedPepperResp } from '@komenci/kit/lib/actions'
 import { FetchError, TxError } from '@komenci/kit/lib/errors'
 import { KomenciKit } from '@komenci/kit/lib/kit'
+import AwaitLock from 'await-lock'
 import DeviceInfo from 'react-native-device-info'
 import {
   all,

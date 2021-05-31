@@ -4,6 +4,7 @@ import { VerificationEvents } from 'src/analytics/Events'
 import ValoraAnalytics from 'src/analytics/ValoraAnalytics'
 import { shortVerificationCodesEnabledSelector } from 'src/app/selectors'
 import { getKomenciAwareAccount, getKomenciKit } from 'src/verify/komenci'
+import { getMockKomenciKit } from 'src/verify/komenci.test'
 import {
   actionableAttestationsSelector,
   fail,
@@ -105,7 +106,7 @@ describe(requestAttestationsSaga, () => {
 
   it('request more attestations with Komenci enabled', async () => {
     const contractKit = await getContractKitAsync()
-    const komenciKit = getKomenciKit(contractKit, mockAccount, mockKomenciContext)
+    const komenciKit = getMockKomenciKit(contractKit, mockAccount, mockKomenciContext)
     const finalActionableAttestations = [
       ...mockActionableAttestations,
       mockActionableAttestations[0],

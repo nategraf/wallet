@@ -48,6 +48,7 @@ import {
   TransactionStatus,
 } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
+import { getKomenciKit } from 'src/verify/komenci'
 import {
   komenciContextSelector,
   NUM_ATTESTATIONS_REQUIRED,

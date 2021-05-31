@@ -579,6 +579,10 @@ export const v9Schema = {
       CodeInputStatus.Disabled,
       CodeInputStatus.Disabled,
     ],
+    komenciConfig: {
+      useLightProxy: false,
+      allowedDeployers: [],
+    },
   },
   walletConnect: {
     pairings: [],
@@ -589,13 +593,6 @@ export const v9Schema = {
   fiatExchanges: {
     ...v8Schema.fiatExchanges,
     providerLogos: {},
-  },
-  verify: {
-    ...v8Schema.verify,
-    komenciConfig: {
-      useLightProxy: false,
-      allowedDeployers: [],
-    },
   },
 }
 

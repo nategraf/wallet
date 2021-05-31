@@ -1,4 +1,6 @@
-import { verifyWallet } from '@celo/komencikit/src/verifyWallet'
+import { Address, ContractKit } from '@celo/contractkit'
+import { KomenciKit, ProxyType } from '@komenci/kit/lib/kit'
+import { verifyWallet } from '@komenci/kit/lib/verifyWallet'
 import * as reduxSagaTestPlan from 'redux-saga-test-plan'
 import { call, select } from 'redux-saga/effects'
 import networkConfig from 'src/geth/networkConfig'
@@ -14,6 +16,7 @@ import {
   fail,
   fetchOnChainData,
   KomenciAvailable,
+  KomenciContext,
   komenciContextSelector,
   phoneHashSelector,
   setKomenciAvailable,
@@ -51,6 +54,19 @@ export const mockAttestationsWrapper = {
   getActionableAttestations: jest.fn(),
 }
 
+export const getMockKomenciKit = (
+  contractKit: ContractKit,
+  walletAddress: Address,
+  komenci: KomenciContext
+) => {
+  return new KomenciKit(contractKit, walletAddress, {
+    url: komenci.callbackUrl ?? 'fake_url',
+    token: komenci.sessionToken,
+    proxyType: ProxyType.LegacyProxy,
+    allowedDeployers: [],
+  })
+}
+
 describe(getKomenciAwareAccount, () => {
   it('get MTW wallet address', async () => {
     await reduxSagaTestPlan
@@ -82,7 +98,7 @@ describe(getKomenciAwareAccount, () => {
 describe(checkIfKomenciAvailableSaga, () => {
   it('sets komenci availability', async () => {
     const contractKit = await getContractKitAsync()
-    const komenciKit = getKomenciKit(contractKit, mockAccount, mockKomenciContext)
+    const komenciKit = getMockKomenciKit(contractKit, mockAccount, mockKomenciContext)
     await reduxSagaTestPlan
       .expectSaga(checkIfKomenciAvailableSaga)
       .provide([
@@ -100,7 +116,7 @@ describe(checkIfKomenciAvailableSaga, () => {
 describe(fetchOrDeployMtwSaga, () => {
   it('fails on multiple verified addresses', async () => {
     const contractKit = await getContractKitAsync()
-    const komenciKit = getKomenciKit(contractKit, mockAccount, mockKomenciContext)
+    const komenciKit = getMockKomenciKit(contractKit, mockAccount, mockKomenciContext)
     ;(mockAttestationsWrapper.lookupAccountsForIdentifier as jest.Mock).mockReturnValue(['0', '1'])
     ;(mockAttestationsWrapper.getVerifiedStatus as jest.Mock).mockReturnValue({
       isVerified: true,
@@ -191,7 +207,7 @@ describe(fetchOrDeployMtwSaga, () => {
 
   it('succeeds for already cached unverified MTW address', async () => {
     const contractKit = await getContractKitAsync()
-    const komenciKit = getKomenciKit(contractKit, mockAccount, mockKomenciContext)
+    const komenciKit = getMockKomenciKit(contractKit, mockAccount, mockKomenciContext)
     ;(mockAttestationsWrapper.lookupAccountsForIdentifier as jest.Mock).mockReturnValue([
       mockAccount1,
     ])
@@ -240,7 +256,7 @@ describe(fetchOrDeployMtwSaga, () => {
 
   it('succeeds if already deployed wallet is a valid MTW', async () => {
     const contractKit = await getContractKitAsync()
-    const komenciKit = getKomenciKit(contractKit, mockAccount, mockKomenciContext)
+    const komenciKit = getMockKomenciKit(contractKit, mockAccount, mockKomenciContext)
     ;(mockAttestationsWrapper.lookupAccountsForIdentifier as jest.Mock).mockReturnValue([
       mockAccount1,
     ])
