@@ -1,8 +1,8 @@
 import express from 'express'
-
 import { ENVIRONMENT, PORT, VERSION, WEB3_PROVIDER_URL } from './config'
 import { initDatabase } from './database/db'
 import { pollers } from './polling'
+import { initializeFirebase } from './rewards/firebaseListeners'
 
 console.info('Service starting with environment, version:', ENVIRONMENT, VERSION)
 const START_TIME = Date.now()
@@ -37,8 +37,11 @@ app.listen(PORT, () => {
   console.info(`App listening on port ${PORT} with env ${ENVIRONMENT}`)
 })
 
+initializeFirebase()
 initDatabase()
-  .then(() => pollers.forEach((poller) => poller.run()))
+  .then(() => {
+    pollers.forEach((poller) => poller.run())
+  })
   .catch((error) => console.error('Error initializing database', error))
 
 if (!WEB3_PROVIDER_URL) {

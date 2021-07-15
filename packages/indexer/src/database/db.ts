@@ -33,3 +33,11 @@ export async function initDatabase() {
   console.info('Database initialized successfully')
   return database
 }
+
+export async function runRawSql(sql: string) {
+  if (!database) {
+    throw new Error('Database not yet initialized')
+  }
+  const result = await database.raw(sql)
+  return result.rows
+}
